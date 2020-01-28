@@ -3,6 +3,10 @@ from referee import Referee
 from player import HumanPlayer, ComputerPlayer
 from pypinyin import lazy_pinyin
 
+import os
+if os.name == 'posix':
+    import readline   # unix readline support.
+
 
 class GameEngine:
     def __init__(self):
