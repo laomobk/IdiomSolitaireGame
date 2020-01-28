@@ -5,7 +5,10 @@ from pypinyin import lazy_pinyin
 
 import os
 if os.name == 'posix':
-    import readline   # unix readline support.
+    try:
+        import readline   # unix readline support.
+    except ImportError:
+        pass
 
 
 class GameEngine:

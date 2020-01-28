@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import random
 from pypinyin import lazy_pinyin
 
+
 class Referee:
     __URL_SEARCH = 'http://www.chengyujielong.com.cn/search/%s'
 
