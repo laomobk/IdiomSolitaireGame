@@ -5,8 +5,9 @@ def main():
 
     try:
         s = eg.run_game()
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         pass
+
     print('\nScore =', eg.score)
     print('Exit game.')
 
