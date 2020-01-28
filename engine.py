@@ -11,10 +11,17 @@ class GameEngine:
 type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 '''
         self.help_ps = 'help'
+        self.__each_score = 10
 
         self.__referee = Referee()
 
         self.__players = [ComputerPlayer(), HumanPlayer()]
+
+        self.__global_socre = 0
+
+    @property
+    def score(self) -> int:
+        return self.__global_socre
 
     def __who_is_next_turn(self, first :int) -> int:
         '''
@@ -31,7 +38,10 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 t = 0
                 yield 1
 
-    def run_game(self, first_turn :int=1):
+    def run_game(self, first_turn :int=1) -> int:
+        '''
+        :return: 这局游戏的得分
+        '''
         turn_generator = self.__who_is_next_turn(first_turn)
         now_topic = None
         turn = next(turn_generator)
@@ -40,10 +50,13 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
         print(self.welcome_text)
 
+        self.__global_socre = 0
+
         while True:
             a = self.__players[turn]
             b = self.__players[abs(turn - 1)]
 
+            print('Your score =', self.__global_socre)
             print('It is your turn! %s' % ('topic is \'%s\' ' % lazy_pinyin(now_topic)[-1] if now_topic else ''))
             ans = a.give_answer()
 
@@ -71,14 +84,16 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                     break
 
                 elif ans == 'QUIT':
-                    print('Quit game.')
-                    return
+                    return self.__global_socre
 
                 ans = a.give_answer('\'%s\' is incorrect. Try another one \n>> ' % ans)
 
             if jump_over:
                 jump_over = False
                 continue
+
+            if now_topic:
+                self.__global_socre += self.__each_score
 
             pyin = lazy_pinyin(ans)
 
@@ -87,7 +102,9 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
             if not now_topic:
                 print('Opponent(%s) : %s' % (b, 'OK, I give in...'))
-                return
+                print('You win the computer!! Get 100 score!!')
+                self.__global_socre += 100
+                return self.__global_socre
 
             self.__referee.set_topic(now_topic)
             print('Opponent(%s) : %s' % (b, now_topic))

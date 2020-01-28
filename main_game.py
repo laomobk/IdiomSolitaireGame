@@ -1,11 +1,14 @@
 import engine
 
 def main():
-    engine.GameEngine().run_game()
+    eg = engine.GameEngine()
 
+    try:
+        s = eg.run_game()
+    except KeyboardInterrupt:
+        pass
+    print('\nScore =', eg.score)
+    print('Exit game.')
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        print('Exit game.')
+    main()
