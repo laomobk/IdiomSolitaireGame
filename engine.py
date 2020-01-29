@@ -63,7 +63,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
             save.high_score = score
 
     def __new_game(self):
-        print('\nInit new game')
+        print('Init new game')
         return input('Your name : ')
 
     def run_game(self, save :Save=None, first_turn :int=1) -> int:
@@ -126,11 +126,15 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 ans = a.give_answer('\'%s\' is incorrect. Try another one \n>> ' % ans)
 
             if jump_over:
+                self.__update_save(
+                    now_topic, int(time.time()), self.__global_socre, now_save)
                 jump_over = False
                 continue
 
             if now_topic:
                 self.__global_socre += self.__each_score
+                self.__update_save(
+                    now_topic, int(time.time()), self.__global_socre, now_save)
                 
             pyin = lazy_pinyin(ans)
 
