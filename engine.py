@@ -86,6 +86,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
         jump_over = False
 
+        print()
         print(self.welcome_text)
 
         while True:
