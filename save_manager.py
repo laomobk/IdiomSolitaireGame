@@ -10,12 +10,14 @@ _C_OFS = 5
 
 class Save:
     def __init__(self, player_name :str, high :int, last_play_time :int,
-            topic :str, score :int):
+            topic :str, score :int, save_name :str=None):
         self.player_name = player_name
         self.high_score = high
         self.last_play_time = last_play_time
         self.topic = topic
         self.now_score = score
+
+        self.save_name = save_name
 
 
 class SaveManager:
@@ -47,7 +49,13 @@ class SaveManager:
                 name, high, last, topic, score = [base64.b64decode(item).decode()
                     for item in (sj['player_name'], sj['high'], sj['last'],
                                     sj['topic'], sj['score'])]
-                return Save(name, int(high), int(last), topic, int(score))
+                sn = os.path.split(save_path)[-1]
+
+                # check topic
+                if topic == 'None':
+                    topic = None
+
+                return Save(name, int(high), int(last), topic, int(score), sn)
             except (KeyError, ValueError):
                 return None
 
@@ -71,13 +79,17 @@ class SaveManager:
             ds = json.dumps(jd)
 
             ds = ''.join([chr(ord(c) + _C_OFS) for c in ds])
-            sn = 'SAVE_%s.%s' % (len(cls.search_save(save_path)), SAVE_FILE_TYPE)
+
+            if not save.save_name:
+                sn = 'SAVE_%s.%s' % (len(cls.search_save(save_path)), SAVE_FILE_TYPE)
+            else:
+                sn = save.save_name
 
             with open(os.path.join(save_path, sn), 'wb') as f:
                 f.write(ds.encode())
 
             return True
-        except:
+        except Exception:
             raise
             return False
 

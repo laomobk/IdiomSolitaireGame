@@ -3,6 +3,7 @@ print(' Loading...\r', end='')
 import engine
 from save_manager import Save, SaveManager
 
+
 def ask_for_save() -> Save:
     found = SaveManager.search_save()
 
@@ -14,6 +15,7 @@ def ask_for_save() -> Save:
         print()
         print('[%d]  NEW GAME' % len(found))
         print('[%d]  EXIT' % (len(found) + 1))
+        print()
 
         while True:
             try:
@@ -33,6 +35,7 @@ def ask_for_save() -> Save:
     
     return None
 
+
 def main():
     eg = engine.GameEngine()
 
@@ -43,7 +46,7 @@ def main():
         pass
 
     if eg.save:
-        print('Auto saving...')
+        print('\nAuto saving...')
         signal = SaveManager.write_save(eg.save, '.')
 
         if signal:
@@ -53,6 +56,7 @@ def main():
 
         print('\nScore =', eg.save.now_score)
     print('Exit game.')
+
 
 if __name__ == '__main__':
     main()

@@ -63,7 +63,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
             save.high_score = score
 
     def __new_game(self):
-        print('Init new game')
+        print('\nInit new game')
         return input('Your name : ')
 
     def run_game(self, save :Save=None, first_turn :int=1) -> int:
@@ -88,14 +88,13 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
         print(self.welcome_text)
 
-        self.__global_socre = 0
-
         while True:
             a = self.__players[turn]
             b = self.__players[abs(turn - 1)]
 
-            print('Your score =', self.__global_socre)
-            print('It is your turn! %s' % ('topic is \'%s\' ' % lazy_pinyin(now_topic)[-1] if now_topic else ''))
+            print('Score =', self.__global_socre)
+            print('It is your turn! %s' %
+                  ('topic is \'%s\' ' % lazy_pinyin(now_topic)[-1] if now_topic else ''))
             ans = a.give_answer('%s >> ' % now_save.player_name)
 
             while not self.__referee.check_answer(ans, now_topic if now_topic else ans[::-1]):
@@ -146,7 +145,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 return now_save
 
             self.__referee.set_topic(now_topic)
-            print('Opponent(%s) : %s' % (b, now_topic))
+            print('\nOpponent(%s) : %s\n' % (b, now_topic))
 
             self.__update_save(
                         now_topic, int(time.time()), self.__global_socre, now_save)
