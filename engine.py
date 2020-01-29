@@ -2,8 +2,11 @@
 from referee import Referee
 from player import HumanPlayer, ComputerPlayer
 from pypinyin import lazy_pinyin
+from save_manager import Save, SaveManager
 
 import os
+import time
+
 if os.name == 'posix':
     try:
         import readline   # unix readline support.
@@ -25,10 +28,15 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
         self.__players = [ComputerPlayer(), HumanPlayer()]
 
         self.__global_socre = 0
+        self.__global_save = None
 
     @property
     def score(self) -> int:
         return self.__global_socre
+
+    @property
+    def save(self) -> Save:
+        return self.__global_save
 
     def __who_is_next_turn(self, first :int) -> int:
         '''
@@ -45,13 +53,36 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 t = 0
                 yield 1
 
-    def run_game(self, first_turn :int=1) -> int:
+    def __update_save(self, now_topic :str, now_time :int, 
+                        score :int, save :Save):
+        save.topic = now_topic
+        save.last_play_time = now_time
+        save.now_score = score
+
+        if save.high_score < score:
+            save.high_score = score
+
+    def __new_game(self):
+        print('Init new game')
+        return input('Your name : ')
+
+    def run_game(self, save :Save=None, first_turn :int=1) -> int:
         '''
         :return: 这局游戏的得分
         '''
         turn_generator = self.__who_is_next_turn(first_turn)
-        now_topic = None
         turn = next(turn_generator)
+        
+        now_save = save
+
+        if not now_save:
+            now_save = Save('<NO NAME>', 0, int(time.time()), None, 0)
+            now_save.player_name = self.__new_game()
+
+        now_topic = now_save.topic
+        self.__global_socre = now_save.now_score
+
+        self.__global_save = now_save
 
         jump_over = False
 
@@ -65,7 +96,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
             print('Your score =', self.__global_socre)
             print('It is your turn! %s' % ('topic is \'%s\' ' % lazy_pinyin(now_topic)[-1] if now_topic else ''))
-            ans = a.give_answer()
+            ans = a.give_answer('%s >> ' % now_save.player_name)
 
             while not self.__referee.check_answer(ans, now_topic if now_topic else ans[::-1]):
                 if ans in ('HELP', 'HELPME'):
@@ -91,7 +122,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                     break
 
                 elif ans == 'QUIT':
-                    return self.__global_socre
+                    return now_save
 
                 ans = a.give_answer('\'%s\' is incorrect. Try another one \n>> ' % ans)
 
@@ -101,7 +132,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
 
             if now_topic:
                 self.__global_socre += self.__each_score
-
+                
             pyin = lazy_pinyin(ans)
 
             b.recv_question(pyin[-1])
@@ -111,7 +142,12 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 print('Opponent(%s) : %s' % (b, 'OK, I give in...'))
                 print('You win the computer!! Get 100 score!!')
                 self.__global_socre += 100
-                return self.__global_socre
+
+                return now_save
 
             self.__referee.set_topic(now_topic)
             print('Opponent(%s) : %s' % (b, now_topic))
+
+            self.__update_save(
+                        now_topic, int(time.time()), self.__global_socre, now_save)
+
