@@ -96,7 +96,7 @@ class SaveManager:
     @classmethod
     def save_preview(cls, save_path):
         s = cls.load_save(save_path)
-        tstr = time.strftime('%Y / %m / %d | %H:%M:%S)', time.localtime(
+        tstr = time.strftime('%Y / %m / %d | %H:%M:%S', time.localtime(
             s.last_play_time))
         sstr = '%s  [%s]' % (s.player_name, tstr)
 
