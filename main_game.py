@@ -5,10 +5,15 @@ print(lmgr.GLOBAL_LANGUAGE.Global.loading, end='')
 
 import engine
 from save_manager import Save, SaveManager
+import os.path
 
 
 def ask_for_save() -> Save:
     print(lmgr.GLOBAL_LANGUAGE.SaveMenu.finding_save, end='')
+
+    if not os.path.exists('save') or os.path.isfile('save'):
+        os.mkdir('save')
+
     found = SaveManager.search_save()
 
     if found:
