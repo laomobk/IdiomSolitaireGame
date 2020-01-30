@@ -70,6 +70,7 @@ def main():
             print(lmgr.GLOBAL_LANGUAGE.Global.save_failed)
 
         print(lmgr.GLOBAL_LANGUAGE.Global.show_score % eg.save.now_score)
+        print(lmgr.GLOBAL_LANGUAGE.Global.highest_score % eg.save.high_score)
     print(lmgr.GLOBAL_LANGUAGE.Global.exit_game)
 
 

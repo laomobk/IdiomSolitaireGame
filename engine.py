@@ -91,7 +91,7 @@ class GameEngine:
             a = self.__players[turn]
             b = self.__players[abs(turn - 1)]
 
-            print(lmgr.GLOBAL_LANGUAGE.GamePlay.show_score % self.__global_socre)
+            print(lmgr.GLOBAL_LANGUAGE.GamePlay.show_score % (self.__global_socre, save.high_score))
             print(lmgr.GLOBAL_LANGUAGE.GamePlay.your_turn %
                   (lmgr.GLOBAL_LANGUAGE.GamePlay.topic_is % lazy_pinyin(now_topic)[-1] if now_topic else ''))
             ans = a.give_answer('%s >> ' % now_save.player_name)

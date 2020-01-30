@@ -40,6 +40,7 @@ class Language:
         show_score          = ''
         welcome_text        = ''
         loading             = ''
+        highest_score       = ''
 
     def __str__(self):
         return '<Language object \'%s\'>' % self.language_name
