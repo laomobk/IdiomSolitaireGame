@@ -31,21 +31,22 @@ class SaveManager:
         sl = []
 
         for p in pl:
-            ps = p.split('.')[-1]
+            ps = p.split('.')
 
-            if len(ps) > 1 and ps == SAVE_FILE_TYPE:
-                sl.append(os.path.abspath(p))
+            if len(ps) > 1 and ps[-1] == SAVE_FILE_TYPE:
+                res = os.path.abspath(p) if cls.load_save(p) else None
+                sl.append(res)
 
         return sl
 
     @classmethod
     def load_save(cls, save_path :str):
         with open(save_path, 'rb') as f:
-            sf = f.read().decode()
-            sf = ''.join([chr(ord(c) - _C_OFS) for c in sf])
-            sj = json.loads(sf)
-            
             try:
+                sf = f.read().decode()
+                sf = ''.join([chr(ord(c) - _C_OFS) for c in sf])
+                sj = json.loads(sf)
+
                 name, high, last, topic, score = [base64.b64decode(item).decode()
                     for item in (sj['player_name'], sj['high'], sj['last'],
                                     sj['topic'], sj['score'])]
@@ -56,7 +57,7 @@ class SaveManager:
                     topic = None
 
                 return Save(name, int(high), int(last), topic, int(score), sn)
-            except (KeyError, ValueError):
+            except (KeyError, ValueError, json.decoder.JSONDecodeError):
                 return None
 
     @classmethod

@@ -5,10 +5,13 @@ from save_manager import Save, SaveManager
 
 
 def ask_for_save() -> Save:
+    print(' Finding save...\r', end='')
     found = SaveManager.search_save()
 
     if found:
-        print('%d save found:' % len(found))
+        print('%d save found (%d save damaged) :' % 
+                (len(found) - found.count(None), found.count(None)))
+        found = [x for x in found if x]
         for i, p in enumerate(found):
             print('[%d]  %s' % (i, SaveManager.save_preview(p)))
         # print new save
