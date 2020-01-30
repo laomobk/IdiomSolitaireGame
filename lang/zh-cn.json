@@ -1,0 +1,43 @@
+{
+        "sign"     : "IDIOM_SOLITAIRE_LANGUAGE_PACKAGE",
+        "language" : "简体中文",
+
+        "Players": {
+                "computer_player" : "电脑玩家",
+                "human_player"    : "普通玩家"
+        },
+
+        "GamePlay": {
+                "init_game"     : "载入新游戏        ",
+                "ask_name"      : "昵称 : ",
+                "show_score"    : "分数 = %d",
+                "your_turn"     : "轮到你了! %s\n",
+                "topic_is"      : "题目是 : '%s'",
+                "no_prompt_jump": "没有提示，进入下一个回合",
+                "no_prompt_turn": "没有提示，或许因为没有题目",
+                "jump_over"     : "跳过此回合",
+                "incorrect_ps"  : "'%s' 不正确。试试别的 \n>> ",
+                "prompt_is"     : "提示是 : %s",
+                "opponent_say"  : "\n对手(%s) : %s\n",
+                "give_in"       : "好吧，我放弃了...",
+                "win_computer"  : "你战胜了计算机！得到100得分！"
+        },
+
+        "SaveMenu" : {
+                "founded_count" : "找到了 %d 个存档 (%d 个损坏的存档) :",
+                "new_game"      : "[%d] 新游戏",
+                "exit_game"     : "[%d] 退出游戏",
+                "ask_select"    : "选择一个存档（输入索引号）: ",
+                "finding_save"  : "搜寻存档中...\r"
+        },
+
+        "Global" : {
+                "loading"       : "加载中...\r",
+                "auto_save"     : "\n自动存档中...",
+                "save_succeed"  : "保存成功",
+                "save_failed"   : "保持失败",
+                "exit_game"     : "退出游戏",
+                "show_score"    : "\n最终得分 = %d",
+                "welcome_text"  : "欢迎来到 IdiomSolitaire\n输入 'WTF' 来跳过当前回合, 输入 'HELP' 来获取提示, 输入 'QUIT' 退出游戏。"
+        }
+}

@@ -22,19 +22,22 @@ class Save:
 
 class SaveManager:
     @classmethod
-    def search_save(cls, save_path :str='.') -> list:
+    def search_save(cls, save_path :str='save/') -> list:
         '''
         :param save_path : 存档寻找路径
         :return : 返回在 save_path 所找到的存档文件的列表
         '''
-        pl = os.listdir()
+        absp = os.path.abspath(save_path)
+
+        pl = os.listdir(save_path)
         sl = []
 
         for p in pl:
             ps = p.split('.')
 
             if len(ps) > 1 and ps[-1] == SAVE_FILE_TYPE:
-                res = os.path.abspath(p) if cls.load_save(p) else None
+                ep = os.path.join(absp, p)
+                res = ep if cls.load_save(ep) else None
                 sl.append(res)
 
         return sl
@@ -61,8 +64,10 @@ class SaveManager:
                 return None
 
     @classmethod
-    def write_save(cls, save :Save, save_path :str):
+    def write_save(cls, save :Save, save_path :str='save/'):
         try:
+            absp = os.path.abspath(save_path)
+
             name, high, last, topic, score = [
                     base64.b64encode(str(item).encode()).decode()
                     for item in
@@ -86,7 +91,7 @@ class SaveManager:
             else:
                 sn = save.save_name
 
-            with open(os.path.join(save_path, sn), 'wb') as f:
+            with open(os.path.join(absp, sn), 'wb') as f:
                 f.write(ds.encode())
 
             return True

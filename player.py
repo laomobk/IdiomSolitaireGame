@@ -58,7 +58,3 @@ class HumanPlayer(Player):
 
     __repr__ = __str__
 
-
-if __name__ == '__main__':
-    import pprint
-    pprint.pprint(ComputerPlayer().recv_question('一个顶俩'))

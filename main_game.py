@@ -1,28 +1,31 @@
-print(' Loading...\r', end='')
+
+import language_manager as lmgr
+
+print(lmgr.GLOBAL_LANGUAGE.Global.loading, end='')
 
 import engine
 from save_manager import Save, SaveManager
 
 
 def ask_for_save() -> Save:
-    print(' Finding save...\r', end='')
+    print(lmgr.GLOBAL_LANGUAGE.SaveMenu.finding_save, end='')
     found = SaveManager.search_save()
 
     if found:
-        print('%d save found (%d save damaged) :' % 
+        print(lmgr.GLOBAL_LANGUAGE.SaveMenu.founded_count %
                 (len(found) - found.count(None), found.count(None)))
         found = [x for x in found if x]
         for i, p in enumerate(found):
             print('[%d]  %s' % (i, SaveManager.save_preview(p)))
         # print new save
         print()
-        print('[%d]  NEW GAME' % len(found))
-        print('[%d]  EXIT' % (len(found) + 1))
+        print(lmgr.GLOBAL_LANGUAGE.SaveMenu.new_game % len(found))
+        print(lmgr.GLOBAL_LANGUAGE.SaveMenu.exit_game % (len(found) + 1))
         print()
 
         while True:
             try:
-                si = int(input('Select a save (index) : '))
+                si = int(input(lmgr.GLOBAL_LANGUAGE.SaveMenu.ask_select))
 
                 if si > len(found) + 1:
                     continue
@@ -43,22 +46,26 @@ def main():
     eg = engine.GameEngine()
 
     try:
+        # check language
+        if not lmgr.GLOBAL_LANGUAGE:
+            print('Warning : Failed to language package \r')
+
         save = ask_for_save()
         s = eg.run_game(save) 
     except (KeyboardInterrupt, EOFError):
         pass
 
     if eg.save:
-        print('\nAuto saving...')
-        signal = SaveManager.write_save(eg.save, '.')
+        print(lmgr.GLOBAL_LANGUAGE.Global.auto_save)
+        signal = SaveManager.write_save(eg.save)
 
         if signal:
-            print('Success !')
+            print(lmgr.GLOBAL_LANGUAGE.Global.save_succeed)
         else:
-            print('Failed !')
+            print(lmgr.GLOBAL_LANGUAGE.Global.save_failed)
 
-        print('\nScore =', eg.save.now_score)
-    print('Exit game.')
+        print(lmgr.GLOBAL_LANGUAGE.Global.show_score % eg.save.now_score)
+    print(lmgr.GLOBAL_LANGUAGE.Global.exit_game)
 
 
 if __name__ == '__main__':

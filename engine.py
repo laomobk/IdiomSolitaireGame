@@ -3,6 +3,7 @@ from referee import Referee
 from player import HumanPlayer, ComputerPlayer
 from pypinyin import lazy_pinyin
 from save_manager import Save, SaveManager
+import language_manager as lmgr
 
 import os
 import time
@@ -16,10 +17,7 @@ if os.name == 'posix':
 
 class GameEngine:
     def __init__(self):
-        self.welcome_text = \
-            '''welcome to IdiomSolitaire
-type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
-'''
+        self.welcome_text = lmgr.GLOBAL_LANGUAGE.Global.welcome_text
         self.help_ps = 'help'
         self.__each_score = 10
 
@@ -63,8 +61,8 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
             save.high_score = score
 
     def __new_game(self):
-        print('Init new game')
-        return input('Your name : ')
+        print(lmgr.GLOBAL_LANGUAGE.GamePlay.init_game)
+        return input(lmgr.GLOBAL_LANGUAGE.GamePlay.ask_name)
 
     def run_game(self, save :Save=None, first_turn :int=1) -> int:
         '''
@@ -93,9 +91,9 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
             a = self.__players[turn]
             b = self.__players[abs(turn - 1)]
 
-            print('Score =', self.__global_socre)
-            print('It is your turn! %s' %
-                  ('topic is \'%s\' ' % lazy_pinyin(now_topic)[-1] if now_topic else ''))
+            print(lmgr.GLOBAL_LANGUAGE.GamePlay.show_score % self.__global_socre)
+            print(lmgr.GLOBAL_LANGUAGE.GamePlay.your_turn %
+                  (lmgr.GLOBAL_LANGUAGE.GamePlay.topic_is % lazy_pinyin(now_topic)[-1] if now_topic else ''))
             ans = a.give_answer('%s >> ' % now_save.player_name)
 
             while not self.__referee.check_answer(ans, now_topic if now_topic else ans[::-1]):
@@ -103,19 +101,19 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                     p = self.__referee.get_prompt(lazy_pinyin(now_topic)[-1] if now_topic else None)
                     now_topic = None
                     if p:
-                        print('prompt is %s' % p)
+                        print(lmgr.GLOBAL_LANGUAGE.GamePlay.prompt_is % p)
                         now_topic = p
                     elif p == 0:
-                        print('No prompt. May be it is your turn.')
+                        print(lmgr.GLOBAL_LANGUAGE.GamePlay.no_prompt_turn)
                     else:
-                        print('no prompt, jump in next turn.')
+                        print(lmgr.GLOBAL_LANGUAGE.GamePlay.no_prompt_jump)
 
                     jump_over = True
 
                     break
 
                 elif ans == 'WTF':
-                    print('Jump over.')
+                    print(lmgr.GLOBAL_LANGUAGE.GamePlay.jump_over)
                     now_topic = None
                     jump_over = True
 
@@ -124,7 +122,7 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
                 elif ans == 'QUIT':
                     return now_save
 
-                ans = a.give_answer('\'%s\' is incorrect. Try another one \n>> ' % ans)
+                ans = a.give_answer(lmgr.GLOBAL_LANGUAGE.GamePlay.incorrect_ps % ans)
 
             if jump_over:
                 self.__update_save(
@@ -143,14 +141,15 @@ type 'WTF' to skip, type 'HELP' to get prompt, type 'QUIT' to exit.
             now_topic = b.give_answer()
 
             if not now_topic:
-                print('Opponent(%s) : %s' % (b, 'OK, I give in...'))
-                print('You win the computer!! Get 100 score!!')
+                print(lmgr.GLOBAL_LANGUAGE.GamePlay.opponent_say %
+                      (b, lmgr.GLOBAL_LANGUAGE.GamePlay.give_in))
+                print(lmgr.GLOBAL_LANGUAGE.GamePlay.opponent_say)
                 self.__global_socre += 100
 
                 return now_save
 
             self.__referee.set_topic(now_topic)
-            print('\nOpponent(%s) : %s\n' % (b, now_topic))
+            print(lmgr.GLOBAL_LANGUAGE.GamePlay.opponent_say % (b, now_topic))
 
             self.__update_save(
                         now_topic, int(time.time()), self.__global_socre, now_save)
